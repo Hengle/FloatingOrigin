@@ -1,0 +1,22 @@
+{
+    "name": "FloatingOrigin",
+    "rootNamespace": "",
+    "references": [
+        "Cinemachine"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.cinemachine",
+            "expression": "0.0",
+            "define": "USING_CINEMACHINE"
+        }
+    ],
+    "noEngineReferences": false
+}
