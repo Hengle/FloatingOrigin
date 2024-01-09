@@ -460,6 +460,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iterations: 10000
+  dValue: 10.5
+  dValue2: 5.5
 --- !u!1 &980325092
 GameObject:
   m_ObjectHideFlags: 0
