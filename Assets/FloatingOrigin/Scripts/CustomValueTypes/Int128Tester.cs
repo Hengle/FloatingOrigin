@@ -193,7 +193,10 @@ public static class Int128Tester
             Int128 bigIntA = (ulong)i + ulong.MaxValue;
             Int128 bigIntB = (ulong)i / 2 + ulong.MaxValue;
 
-            Int128 bigIntC = bigIntA / (bigIntB + 1);
+            for (int j = 0; j < 3; j++)
+            {
+                Int128 bigIntC = bigIntA / (bigIntB + 1);
+            }
         }
 
         stopwatch.Stop();
@@ -209,7 +212,10 @@ public static class Int128Tester
             BigInteger bigIntA = (ulong)i + ulong.MaxValue;
             BigInteger bigIntB = (ulong)i / 2 + ulong.MaxValue;
 
-            BigInteger bigIntC = bigIntA / (bigIntB + 1);
+            for (int j = 0; j < 3; j++)
+            {
+                BigInteger bigIntC = bigIntA / (bigIntB + 1);
+            }
         }
 
         UnityEngine.Debug.Log($"BigInteger speed: {stopwatch.ElapsedMilliseconds}ms");

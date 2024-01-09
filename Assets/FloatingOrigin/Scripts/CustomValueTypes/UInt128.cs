@@ -875,21 +875,21 @@ public struct UInt128 : IFormattable, IComparable, IComparable<UInt128>, IEquata
 
     private static int GetBitLength(uint value)
     {
-        var tt = value >> 16;
+        uint tt = value >> 16;
+        uint t;
         if (tt != 0)
         {
-            var t = tt >> 8;
+            t = tt >> 8;
             if (t != 0)
                 return bitLength[t] + 24;
             return bitLength[tt] + 16;
         }
-        else
-        {
-            var t = value >> 8;
-            if (t != 0)
-                return bitLength[t] + 8;
-            return bitLength[value];
-        }
+
+        t = value >> 8;
+        if (t != 0)
+            return bitLength[t] + 8;
+        return bitLength[value];
+        
     }
 
     private static int GetBitLength(ulong value)
@@ -920,8 +920,10 @@ public struct UInt128 : IFormattable, IComparable, IComparable<UInt128>, IEquata
             LeftShift64(out UInt128 c, a, b);
             return c;
         }
-        else if (b == 64)
+        
+        if (b == 64)
             return new UInt128(0, a._lower);
+
         return new UInt128(0, a._lower << (b - 64));
     }
 
@@ -937,7 +939,8 @@ public struct UInt128 : IFormattable, IComparable, IComparable<UInt128>, IEquata
     {
         if (b < 64)
             return RightShift64(a, b);
-        else if (b == 64)
+        
+        if (b == 64)
             return new UInt128(a._upper, 0);
 
         return new UInt128(a._upper >> (b - 64), 0);
@@ -955,6 +958,7 @@ public struct UInt128 : IFormattable, IComparable, IComparable<UInt128>, IEquata
         var s0 = a._lower;
         a._lower = 0 - s0;
         a._upper = 0 - a._upper;
+
         if (s0 > 0)
             --a._upper;
 

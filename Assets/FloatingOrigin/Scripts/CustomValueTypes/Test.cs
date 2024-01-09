@@ -6,14 +6,17 @@ public class Test : MonoBehaviour
 {
     public int iterations = 100;
 
+    public double dValue;
+    public double dValue2;
+
 
     void Awake()
     {
-        Profiler.BeginSample("MyScript.Start");
-        
-        Int128Tester.TestSpeed(iterations);
+        FBig big = (FBig)dValue2;//(FBig)double.MaxValue;
 
-        Profiler.EndSample();
+        big += (FBig)dValue;
+
+        Debug.Log(big);
     }
 
 
