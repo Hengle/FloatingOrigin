@@ -184,7 +184,7 @@ public static class Int128Tester
 
 
 
-    public static void TestSpeed(int iterations)
+    static long AddIter128(int iterations)
     {
         var stopwatch = Stopwatch.StartNew();
 
@@ -192,42 +192,141 @@ public static class Int128Tester
         {
             Int128 bigIntA = (ulong)i + ulong.MaxValue;
             Int128 bigIntB = (ulong)i / 2 + ulong.MaxValue;
-
-            for (int j = 0; j < 3; j++)
-            {
-                Int128 bigIntC = bigIntA + (bigIntB + 1);
-            }
+            Int128 bigIntC = bigIntA + (bigIntB + 1);
         }
 
         stopwatch.Stop();
+        return stopwatch.ElapsedMilliseconds;
+    }
 
-        UnityEngine.Debug.Log($"Int128 speed: {stopwatch.ElapsedMilliseconds}ms");
 
-        stopwatch.Reset();
-        stopwatch.Start();
-
+    static long AddIterBig(int iterations)
+    {
+        var stopwatch = Stopwatch.StartNew();
 
         for (int i = 0; i < iterations; i++)
         {
             BigInteger bigIntA = (ulong)i + ulong.MaxValue;
             BigInteger bigIntB = (ulong)i / 2 + ulong.MaxValue;
-
-            for (int j = 0; j < 3; j++)
-            {
-                BigInteger bigIntC = bigIntA + (bigIntB + 1);
-            }
+            BigInteger bigIntC = bigIntA + (bigIntB + 1);
         }
 
-        UnityEngine.Debug.Log($"BigInteger speed: {stopwatch.ElapsedMilliseconds}ms");
+        stopwatch.Stop();
+        return stopwatch.ElapsedMilliseconds;
+    }
+
+
+    static long SubIter128(int iterations)
+    {
+        var stopwatch = Stopwatch.StartNew();
+
+        for (int i = 0; i < iterations; i++)
+        {
+            Int128 bigIntA = (ulong)i + ulong.MaxValue;
+            Int128 bigIntB = (ulong)i / 2 + ulong.MaxValue;
+            Int128 bigIntC = bigIntA - (bigIntB + 1);
+        }
 
         stopwatch.Stop();
-    }  
+        return stopwatch.ElapsedMilliseconds;
+    }
 
 
-    public static void TestTrace()
+    static long SubIterBig(int iterations)
     {
-        UInt128.TraceDivision = true;
-        Int128 res = (Int128)321846 / 866;
-        UInt128.TraceDivision = false;
+        var stopwatch = Stopwatch.StartNew();
+
+        for (int i = 0; i < iterations; i++)
+        {
+            BigInteger bigIntA = (ulong)i + ulong.MaxValue;
+            BigInteger bigIntB = (ulong)i / 2 + ulong.MaxValue;
+            BigInteger bigIntC = bigIntA - (bigIntB + 1);
+        }
+
+        stopwatch.Stop();
+        return stopwatch.ElapsedMilliseconds;
+    }
+
+
+    static long MulIter128(int iterations)
+    {
+        var stopwatch = Stopwatch.StartNew();
+
+        for (int i = 0; i < iterations; i++)
+        {
+            Int128 bigIntA = (ulong)i + ulong.MaxValue;
+            Int128 bigIntB = (ulong)i / 2 + ulong.MaxValue;
+            Int128 bigIntC = bigIntA * (bigIntB + 1);
+        }
+
+        stopwatch.Stop();
+        return stopwatch.ElapsedMilliseconds;
+    }
+
+
+    static long MulIterBig(int iterations)
+    {
+        var stopwatch = Stopwatch.StartNew();
+
+        for (int i = 0; i < iterations; i++)
+        {
+            BigInteger bigIntA = (ulong)i + ulong.MaxValue;
+            BigInteger bigIntB = (ulong)i / 2 + ulong.MaxValue;
+            BigInteger bigIntC = bigIntA * (bigIntB + 1);
+        }
+
+        stopwatch.Stop();
+        return stopwatch.ElapsedMilliseconds;
+    }
+
+
+    static long DivIter128(int iterations)
+    {
+        var stopwatch = Stopwatch.StartNew();
+
+        for (int i = 0; i < iterations; i++)
+        {
+            Int128 bigIntA = (ulong)i + ulong.MaxValue;
+            Int128 bigIntB = (ulong)i / 2 + ulong.MaxValue;
+            Int128 bigIntC = bigIntA / (bigIntB + 1);
+        }
+
+        stopwatch.Stop();
+        return stopwatch.ElapsedMilliseconds;
+    }
+
+
+    static long DivIterBig(int iterations)
+    {
+        var stopwatch = Stopwatch.StartNew();
+
+        for (int i = 0; i < iterations; i++)
+        {
+            BigInteger bigIntA = (ulong)i + ulong.MaxValue;
+            BigInteger bigIntB = (ulong)i / 2 + ulong.MaxValue;
+            BigInteger bigIntC = bigIntA / (bigIntB + 1);
+        }
+
+        stopwatch.Stop();
+        return stopwatch.ElapsedMilliseconds;
+    }
+
+
+    public static void TestSpeed(int iterations)
+    {
+        // 3D Vektors!!!
+        iterations *= 3;
+
+        UnityEngine.Debug.Log($"Int128 add speed: {AddIter128(iterations)}ms");
+        UnityEngine.Debug.Log($"BigInteger add speed: {AddIterBig(iterations)}ms");
+
+        UnityEngine.Debug.Log($"Int128 subtract speed: {SubIter128(iterations)}ms");
+        UnityEngine.Debug.Log($"BigInteger subtract speed: {SubIterBig(iterations)}ms");
+
+        UnityEngine.Debug.Log($"Int128 multiply speed: {MulIter128(iterations)}ms");
+        UnityEngine.Debug.Log($"BigInteger multiply speed: {MulIterBig(iterations)}ms");
+
+        UnityEngine.Debug.Log($"Int128 divide speed: {DivIter128(iterations)}ms");
+        UnityEngine.Debug.Log($"BigInteger divide speed: {DivIterBig(iterations)}ms");
     }  
 }

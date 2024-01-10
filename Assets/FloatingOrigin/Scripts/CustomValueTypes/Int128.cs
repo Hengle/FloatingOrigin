@@ -85,7 +85,7 @@ public struct Int128 : IFormattable, IComparable, IComparable<Int128>, IEquatabl
     public static implicit operator Int128(ushort a) => new Int128((ulong)a);
     public static implicit operator Int128(uint a) => new Int128((ulong)a);
     public static implicit operator Int128(ulong a) => new Int128(a);
-    public static explicit operator Int128(UInt128 a) => new Int128(a);
+    public static explicit operator Int128(UInt128 a) => new Int128 { v = a };
 
     // Signed to Int128
     public static implicit operator Int128(sbyte a) => (a < 0) ? -new Int128(a) : new Int128(a);
@@ -117,15 +117,15 @@ public struct Int128 : IFormattable, IComparable, IComparable<Int128>, IEquatabl
     public static explicit operator double(Int128 a) => a.v._upper > long.MaxValue ? -(double)-a.v : (double)a.v;
     public static explicit operator decimal(Int128 a) => a.v._upper > long.MaxValue ? -(decimal)-a.v : (decimal)a.v;
 
-    // Bitwise Operators
-    public static Int128 operator <<(Int128 a, int b) => (Int128)(a.v << b);
-    public static Int128 operator >>(Int128 a, int b) => (Int128)(a.v >> b);
-    public static Int128 operator &(Int128 a, Int128 b) => (Int128)(a.v & b.v);
-    public static Int128 operator |(Int128 a, Int128 b) => (Int128)(a.v | b.v);
-    public static Int128 operator ^(Int128 a, Int128 b) => (Int128)(a.v ^ b.v);
-    public static Int128 operator ~(Int128 a) => (Int128)~a.v;
+    // Bitwise Operators- Inline to use direct function call
+    [MethodImpl(Inline)] public static Int128 operator <<(Int128 a, int b) => new Int128 { v = a.v << b };
+    [MethodImpl(Inline)] public static Int128 operator >>(Int128 a, int b) => new Int128 { v = a.v >> b };
+    [MethodImpl(Inline)] public static Int128 operator &(Int128 a, Int128 b) => new Int128 { v = a.v & b.v };
+    [MethodImpl(Inline)] public static Int128 operator |(Int128 a, Int128 b) => new Int128 { v = a.v | b.v };
+    [MethodImpl(Inline)] public static Int128 operator ^(Int128 a, Int128 b) => new Int128 { v = a.v ^ b.v };
+    [MethodImpl(Inline)] public static Int128 operator ~(Int128 a) => new Int128 { v = ~a.v };
 
-    // Arithmetic Operators
+    // Arithmetic Operators- Inline to use direct function call
     
     // Addition
     [MethodImpl(Inline)] public static Int128 operator +(Int128 a, long b) => Add(a, b);
@@ -140,7 +140,7 @@ public struct Int128 : IFormattable, IComparable, IComparable<Int128>, IEquatabl
     [MethodImpl(Inline)] public static Int128 operator -(Int128 a, long b) => Subtract(a, b);
     [MethodImpl(Inline)] public static Int128 operator -(Int128 a, ulong b) => Subtract(a, b);
     [MethodImpl(Inline)] public static Int128 operator -(Int128 a, Int128 b) => Subtract(a, b);
-    [MethodImpl(Inline)] public static Int128 operator -(Int128 a) => new Int128(-a.v);
+    [MethodImpl(Inline)] public static Int128 operator -(Int128 a) => new Int128 { v = -a.v };
     [MethodImpl(Inline)] public static Int128 operator --(Int128 a) => Subtract(a, 1);
 
     // Multiplication
@@ -240,69 +240,18 @@ public struct Int128 : IFormattable, IComparable, IComparable<Int128>, IEquatabl
         return CompareTo((Int128)obj);
     }
 
-    private static bool LessThan(UInt128 a, UInt128 b)
-    {
-        var as1 = (long)a._upper;
-        var bs1 = (long)b._upper;
 
-        if (as1 != bs1)
-            return as1 < bs1;
+    private static bool LessThan(UInt128 a, UInt128 b) => a._upper != b._upper ? (long)a._upper < (long)b._upper : a._lower < b._lower;
+    private static bool LessThan(UInt128 a, long b) => (long)a._upper != (b >> 63) ? (long)a._upper < (b >> 63) : a._lower < (ulong)b;
+    private static bool LessThan(long a, UInt128 b) => (a >> 63) != (long)b._upper ? (a >> 63) < (long)b._upper : (ulong)a < b._lower;
+    private static bool LessThan(UInt128 a, ulong b) => ((long)a._upper != 0) ? ((long)a._upper < 0) : (a._lower < b);
+    private static bool LessThan(ulong a, UInt128 b) => (0 != (long)b._upper) ? (0 < (long)b._upper) : (a < b._lower);
 
-        return a._lower < b._lower;
-    }
+    private static int SignedCompare(UInt128 a, ulong bs0, ulong bs1) => (a._upper != bs1) ? ((long)a._upper).CompareTo((long)bs1) : a._lower.CompareTo(bs0);
 
-    private static bool LessThan(UInt128 a, long b)
-    {
-        var as1 = (long)a._upper;
-        var bs1 = b >> 63;
-
-        if (as1 != bs1)
-            return as1 < bs1;
-
-        return a._lower < (ulong)b;
-    }
-
-    private static bool LessThan(long a, UInt128 b)
-    {
-        var as1 = a >> 63;
-        var bs1 = (long)b._upper;
-
-        if (as1 != bs1)
-            return as1 < bs1;
-
-        return (ulong)a < b._lower;
-    }
-
-    private static bool LessThan(UInt128 a, ulong b)
-    {
-        var as1 = (long)a._upper;
-        if (as1 != 0)
-            return as1 < 0;
-
-        return a._lower < b;
-    }
-
-    private static bool LessThan(ulong a, UInt128 b)
-    {
-        var bs1 = (long)b._upper;
-        if (0 != bs1)
-            return 0 < bs1;
-
-        return a < b._lower;
-    }
-
-    private static int SignedCompare(UInt128 a, ulong bs0, ulong bs1)
-    {
-        var as1 = a._upper;
-        if (as1 != bs1)
-            return ((long)as1).CompareTo((long)bs1);
-
-        return a._lower.CompareTo(bs0);
-    }
-
-    public bool Equals(UInt128 other) => !(v._upper > long.MaxValue) && v.Equals(other);
-
-    public bool Equals(Int128 other) => v.Equals(other.v);
+    public readonly bool Equals(UInt128 other) => !(v._upper > long.MaxValue) && v.Equals(other);
+    public readonly bool Equals(ulong other) => v._upper == 0 && v._lower == other;
+    public readonly bool Equals(Int128 other) => v.Equals(other.v);
 
     public readonly bool Equals(long other)
     {
@@ -311,7 +260,6 @@ public struct Int128 : IFormattable, IComparable, IComparable<Int128>, IEquatabl
         return v._upper == 0 && v._lower == (ulong)other;
     }
 
-    public readonly bool Equals(ulong other) => v._upper == 0 && v._lower == other;
 
     public readonly override bool Equals(object obj)
     {
@@ -321,132 +269,86 @@ public struct Int128 : IFormattable, IComparable, IComparable<Int128>, IEquatabl
         return v.Equals(((Int128)obj).v);
     }
 
-    public override readonly int GetHashCode() => v.GetHashCode();
+    public readonly override int GetHashCode() => v.GetHashCode();
 
 
-    // Arithmetic Functions
+    // Arithmetic Functions- A.K.A atrocious one-liner warcrimes.
+    // These were readable at one point but I gave readability up to cram them together. 
+    // Check out the un-fucked version here: https://github.com/ricksladkey/dirichlet-numerics/blob/master/Dirichlet.Numerics/Int128.cs
+
+    // Inline all of these since it's faster than calling functions and copying around values.
+
+    // This hopefully means that an addition compiles like so: (a + b) -> Int128.Add(a, b) -> new Int128 { v = a.v + b } -> new Int128 { v = UInt128.Add(a.v + b) }
 
     // Addition
-    private static Int128 Add(Int128 a, ulong b)
-    {
-        Int128 c;
-        c.v = a.v + b;
-        return c;
-    }
+    [MethodImpl(Inline)] 
+    private static Int128 Add(Int128 a, ulong b) => new Int128 { v = a.v + b };
 
-    private static Int128 Add(Int128 a, long b)
-    {
-        Int128 c;
-        c.v = b < 0 ? a.v - (ulong)-b : a.v + (ulong)b;
-        return c;
-    }
+    [MethodImpl(Inline)] 
+    private static Int128 Add(Int128 a, long b) => new Int128 { v = b < 0 ? a.v - (ulong)-b : a.v + (ulong)b };
 
-    private static Int128 Add(Int128 a, Int128 b)
-    {
-        Int128 c;
-        c.v = a.v + b.v;
-        return c;
-    }
+    [MethodImpl(Inline)] 
+    private static Int128 Add(Int128 a, Int128 b) => new Int128 { v = a.v + b.v };
 
     // Subtraction
-    private static Int128 Subtract(Int128 a, ulong b)
-    {
-        Int128 c;
-        c.v = a.v - b;
-        return c;
-    }
+    [MethodImpl(Inline)] 
+    private static Int128 Subtract(Int128 a, ulong b) => new Int128 { v = a.v - b };
 
-    public static Int128 Subtract(Int128 a, long b)
-    {
-        Int128 c;
-        c.v = b < 0 ? a.v + (ulong)-b : a.v - (ulong)b;
-        return c;
-    }
+    [MethodImpl(Inline)] 
+    public static Int128 Subtract(Int128 a, long b) => new Int128 { v = b < 0 ? a.v + (ulong)-b : a.v - (ulong)b };
 
-    private static Int128 Subtract(Int128 a, Int128 b)
-    {
-        Int128 c;
-        c.v = a.v - b.v;
-        return c;
-    }
+    [MethodImpl(Inline)] 
+    private static Int128 Subtract(Int128 a, Int128 b) => new Int128 { v = a.v - b.v };
 
     // Multiplication
-    public static Int128 Multiply(Int128 a, long b)
-    {
-        Int128 c;
-        if (a.v._upper > long.MaxValue)
-            c.v = b < 0 ? ((-a.v) * (ulong)-b) : -((-a.v) * (ulong)b);
-        else
-            c.v = b < 0 ? -(a.v * (ulong)-b) : a.v * (ulong)b;
-        return c;
-    }
+    [MethodImpl(Inline)] 
+    public static Int128 Multiply(Int128 a, long b) => new Int128 { v = a.v._upper > long.MaxValue ? (b < 0 ? ((-a.v) * (ulong)-b) : -((-a.v) * (ulong)b)) : (b < 0 ? -(a.v * (ulong)-b) : a.v * (ulong)b) };
 
-    public static Int128 Multiply(Int128 a, ulong b)
-    {
-        Int128 c; 
-        c.v = a.v._upper > long.MaxValue ? -(-a.v * b) : (a.v * b); 
-        return c;
-    }
+    [MethodImpl(Inline)] 
+    public static Int128 Multiply(Int128 a, ulong b) => new Int128 { v = a.v._upper > long.MaxValue ? -(-a.v * b) : (a.v * b) };
 
-    public static Int128 Multiply(Int128 a, Int128 b)
-    {
-        Int128 c;
-        if (a.v._upper > long.MaxValue)
-            c.v = b.v._upper > long.MaxValue ? (-a.v * -b.v) : -(-a.v * b.v);
-        else
-            c.v = b.v._upper > long.MaxValue ? -(a.v * -b.v) : (a.v * b.v);
-        return c;
-    }
+    [MethodImpl(Inline)] 
+    public static Int128 Multiply(Int128 a, Int128 b) => new Int128 { v = a.v._upper > long.MaxValue ? (b.v._upper > long.MaxValue ? (-a.v * -b.v) : -(-a.v * b.v)) : (b.v._upper > long.MaxValue ? -(a.v * -b.v) : (a.v * b.v)) };
 
     // Division
-    public static Int128 Divide(Int128 a, long b)
-    {
-        Int128 c;
-        if (a.v._upper > long.MaxValue)
-            c.v = b < 0 ? (-a.v / (ulong)-b) : -(-a.v / (ulong)b);
-        else
-            c.v = b < 0 ? -(a.v / (ulong)-b) : (a.v / (ulong)b);
-        return c;
-    }
+    [MethodImpl(Inline)] 
+    public static Int128 Divide(Int128 a, long b) => new Int128 { v = a.v._upper > long.MaxValue ? (b < 0 ? (-a.v / (ulong)-b) : -(-a.v / (ulong)b)) : (b < 0 ? -(a.v / (ulong)-b) : (a.v / (ulong)b)) };
 
-    public static Int128 Divide(Int128 a, ulong b)
-    {
-        Int128 c;
-        c.v = a.v._upper > long.MaxValue ? -(-a.v / b) : (a.v / b);
-        return c;
-    }
+    [MethodImpl(Inline)] 
+    public static Int128 Divide(Int128 a, ulong b) => new Int128 { v = a.v._upper > long.MaxValue ? -(-a.v / b) : (a.v / b) };
+    
+    [MethodImpl(Inline)] 
+    public static Int128 Divide(Int128 a, Int128 b) => new Int128 { v = a.v._upper > long.MaxValue ? (b.v._upper > long.MaxValue ? (-a.v / -b.v) : -(-a.v / b.v)) : (b.v._upper > long.MaxValue ? -(a.v / -b.v) : (a.v / b.v)) };
 
-    public static Int128 Divide(Int128 a, Int128 b)
-    {
-        Int128 c;
-        if (a.v._upper > long.MaxValue)
-            c.v = b.v._upper > long.MaxValue ? (-a.v / -b.v) : -(-a.v / b.v);
-        else
-            c.v = b.v._upper > long.MaxValue ? -(a.v / -b.v) : (a.v / b.v);
-        return c;
-    }
 
     // Modulus
-    public static long Remainder(Int128 a, long b)
-    {
-        if (a.v._upper > long.MaxValue)
-            return b < 0 ? (long)(-a.v % (ulong)-b) : -(long)(-a.v % (ulong)b);
-        
-        return b < 0 ? -(long)(a.v % (ulong)-b) : (long)(a.v % (ulong)b);
-    }
+    [MethodImpl(Inline)]
+    public static long Remainder(Int128 a, long b) => a.v._upper > long.MaxValue ? (b < 0 ? (long)(-a.v % (ulong)-b) : -(long)(-a.v % (ulong)b)) : (b < 0 ? -(long)(a.v % (ulong)-b) : (long)(a.v % (ulong)b));
+    
+    [MethodImpl(Inline)] 
+    public static long Remainder(Int128 a, ulong b) => a.v._upper > long.MaxValue ? -(long)(-a.v % b) : (long)(a.v % b);
+    
+    [MethodImpl(Inline)] 
+    public static Int128 Remainder(Int128 a, Int128 b) => new Int128 { v = a.v._upper > long.MaxValue ? (b.v._upper > long.MaxValue ? (-a.v % -b.v) : -(-a.v % b.v)) : (b.v._upper > long.MaxValue ? -(a.v % -b.v) : (a.v % b.v)) };
 
-    public static long Remainder(Int128 a, ulong b)
-    {
-        return a.v._upper > long.MaxValue ? -(long)(-a.v % b) : (long)(a.v % b);
-    }
 
-    public static Int128 Remainder(Int128 a, Int128 b)
+    public static Int128 Pow(Int128 value, int exponent)
     {
         Int128 c;
-        if (a.v._upper > long.MaxValue)
-            c.v = b.v._upper > long.MaxValue ? (-a.v % -b.v) : -(-a.v % b.v);
+
+        if (exponent < 0)
+            throw new ArgumentException("exponent cannot be negative");
+
+        if (value.v._upper > long.MaxValue)
+        {
+            if ((exponent & 1) == 0)
+                c.v = UInt128.Pow(-value.v, (uint)exponent);
+            else
+                c.v = -(UInt128.Pow(-value.v, (uint)exponent));
+        }
         else
-            c.v = b.v._upper > long.MaxValue ? -(a.v % -b.v) : (a.v % b.v);
+            c.v = UInt128.Pow(value.v, (uint)exponent);
+        
         return c;
     }
 }

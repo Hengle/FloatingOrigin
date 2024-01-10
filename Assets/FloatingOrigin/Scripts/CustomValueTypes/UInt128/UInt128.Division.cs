@@ -6,17 +6,6 @@ namespace BigIntegers
 
 public partial struct UInt128
 {
-    public static bool TraceDivision = false;
-
-    static int indent = 0;
-    static List<(string, int)> indentList = new();
-
-    static void Trace(string name)
-    {
-
-    }
-
-
     // Divide UInt128-UInt128
     // |↳ Divide UInt128-ulong
     // |↳ DivRem96

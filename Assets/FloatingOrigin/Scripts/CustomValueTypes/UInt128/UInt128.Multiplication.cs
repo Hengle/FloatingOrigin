@@ -54,6 +54,49 @@ public partial struct UInt128
         else
             return Multiply128(a, b);
     }
+
+    private static UInt128 Square64(ulong u)
+    {
+        var u0 = (ulong)(uint)u;
+        var u1 = u >> 32;
+        var carry = u0 * u0;
+        var r0 = (uint)carry;
+        var u0u1 = u0 * u1;
+        carry = (carry >> 32) + u0u1;
+        var r2 = carry >> 32;
+        carry = (uint)carry + u0u1;
+
+        return new UInt128(carry << 32 | r0, (carry >> 32) + r2 + u1 * u1);
+    }
+
+    public static UInt128 Square(UInt128 a)
+    {
+        if (a._upper == 0)
+            return Square64(a._lower);
+        
+        return Multiply128(a, a);
+    }
+
+    public static UInt128 Pow(UInt128 value, uint exponent)
+    {
+        UInt128 result = One;
+        while (exponent != 0)
+        {
+            if ((exponent & 1) != 0)
+            {
+                var previous = result;
+                result = Multiply(previous, value);
+            }
+            if (exponent != 1)
+            {
+                var previous = value;
+                value = Square(previous);
+            }
+            exponent >>= 1;
+        }
+
+        return result;
+    }
 }
 
 }

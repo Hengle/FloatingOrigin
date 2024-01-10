@@ -6,27 +6,35 @@ public class Test : MonoBehaviour
 {
     public int iterations = 100;
 
-    public double dValue;
-    public double dValue2;
+
+    public long bigVal;
+    public long otherBigVal;
 
 
     void Awake()
     {
-        Int128Tester.TestTrace();
+        Int128 bigLad = bigVal;
+        Debug.Log(AbbreviateChunk(bigLad));
+
     }
 
 
-    /*private static readonly string[] abbreviations =  { "", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc" };
+    private static readonly string[] abbreviations =  { "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "UnDc" };
 
-    static string AbbreviateChunk(FloatChunk chunk)
+    static string AbbreviateChunk(Int128 chunk)
     {
-        //long checkSize = Math.Pow(1000, abbreviations.Length);
+        if (chunk < 1000)
+            return chunk.ToString();
 
-        if (chunk > 1000)
-            return "K";
-        
-        if (chunk > 1000);
+        for (int i = 0; i < abbreviations.Length; i++)
+        {
+            Int128 valueLo = Int128.Pow(1000, i + 1);
+            Int128 valueHi = Int128.Pow(1000, i + 2);
+
+            if (chunk >= valueLo && chunk < valueHi)
+                return (chunk / valueLo) + abbreviations[i];
+        }
     
-        return "";
-    }*/
+        return chunk.ToString();
+    }
 }

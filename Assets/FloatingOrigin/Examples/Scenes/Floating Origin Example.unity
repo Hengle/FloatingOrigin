@@ -459,9 +459,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e50bf1478c4a642daeb2fb93caea12e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  iterations: 1000000
-  dValue: 0
-  dValue2: 0
+  iterations: 200000
+  bigVal: 9223372036854775807
+  otherBigVal: 0
 --- !u!1 &980325092
 GameObject:
   m_ObjectHideFlags: 0

@@ -111,7 +111,7 @@ public partial struct UInt128 : IFormattable, IComparable, IComparable<UInt128>,
     public static explicit operator double(UInt128 a) => ToDouble(a);
     public static explicit operator decimal(UInt128 a) => ToDecimal(a);
 
-    // Bitwise Operators
+    // Bitwise Operators- Inline to use direct function call
     [MethodImpl(Inline)] public static UInt128 operator <<(UInt128 a, int b) => LeftShift(a, b);
     [MethodImpl(Inline)] public static UInt128 operator >>(UInt128 a, int b) => RightShift(a, b);
     [MethodImpl(Inline)] public static UInt128 operator &(UInt128 a, UInt128 b) => And(a, b);
@@ -119,7 +119,7 @@ public partial struct UInt128 : IFormattable, IComparable, IComparable<UInt128>,
     [MethodImpl(Inline)] public static UInt128 operator ^(UInt128 a, UInt128 b) => ExclusiveOr(a, b);
     [MethodImpl(Inline)] public static UInt128 operator ~(UInt128 a) => Not(a);
 
-    // Arithmetic Operators
+    // Arithmetic Operators- Inline to use direct function call
 
     // Addition
     [MethodImpl(Inline)] public static UInt128 operator +(UInt128 a, UInt128 b) => Add(a, b);
