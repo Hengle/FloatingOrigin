@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics;
 using System.Numerics;
-using CustomTypes;
+using System.Reflection;
+using BigIntegers;
 
 public static class Int128Tester
 {
@@ -43,7 +45,7 @@ public static class Int128Tester
     }
 
 
-    private static void TestDiv(Int128 value, Int128 otherValue)
+    private static void TestDiv(Int128 value, long otherValue)
     {
         Int128 result = value / otherValue;
         BigInteger oresult = (BigInteger)value / (BigInteger)otherValue;
@@ -78,7 +80,7 @@ public static class Int128Tester
 
     private static long GetMiniNum()
     {
-        return (long)random.Next(1, 100000);
+        return random.Next(1, 100000);
     }
 
     private static Int128 GetMegaNum()
@@ -137,10 +139,10 @@ public static class Int128Tester
         TestDiv(-GetNum(), -GetNum());
 
         // Above long range
-        TestDiv(GetMegaNum(), GetMegaNum());
-        TestDiv(-GetMegaNum(), GetMegaNum());
-        TestDiv(GetMegaNum(), -GetMegaNum());
-        TestDiv(-GetMegaNum(), -GetMegaNum());
+        TestDiv(GetMegaNum(), GetNum());
+        TestDiv(-GetMegaNum(), GetNum());
+        TestDiv(GetMegaNum(), -GetNum());
+        TestDiv(-GetMegaNum(), -GetNum());
     }
 
 
@@ -166,9 +168,7 @@ public static class Int128Tester
         Int128Tester.test = 0;
 
         for (int i = 0; i < iterations; i++)
-        {
             test.Invoke();
-        }
     }
 
 
@@ -186,7 +186,7 @@ public static class Int128Tester
 
     public static void TestSpeed(int iterations)
     {
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        var stopwatch = Stopwatch.StartNew();
 
         for (int i = 0; i < iterations; i++)
         {
@@ -195,7 +195,7 @@ public static class Int128Tester
 
             for (int j = 0; j < 3; j++)
             {
-                Int128 bigIntC = bigIntA / (bigIntB + 1);
+                Int128 bigIntC = bigIntA + (bigIntB + 1);
             }
         }
 
@@ -214,12 +214,20 @@ public static class Int128Tester
 
             for (int j = 0; j < 3; j++)
             {
-                BigInteger bigIntC = bigIntA / (bigIntB + 1);
+                BigInteger bigIntC = bigIntA + (bigIntB + 1);
             }
         }
 
         UnityEngine.Debug.Log($"BigInteger speed: {stopwatch.ElapsedMilliseconds}ms");
 
         stopwatch.Stop();
-    }    
+    }  
+
+
+    public static void TestTrace()
+    {
+        UInt128.TraceDivision = true;
+        Int128 res = (Int128)321846 / 866;
+        UInt128.TraceDivision = false;
+    }  
 }

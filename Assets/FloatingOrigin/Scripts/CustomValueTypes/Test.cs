@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.Profiling;
-using CustomTypes;
+using BigIntegers;
 
 public class Test : MonoBehaviour
 {
@@ -12,11 +12,7 @@ public class Test : MonoBehaviour
 
     void Awake()
     {
-        FBig big = (FBig)dValue2;//(FBig)double.MaxValue;
-
-        big += (FBig)dValue;
-
-        Debug.Log(big);
+        Int128Tester.TestTrace();
     }
 
 

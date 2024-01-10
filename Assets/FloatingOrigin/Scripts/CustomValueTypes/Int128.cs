@@ -6,9 +6,17 @@ using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace CustomTypes
+namespace BigIntegers
 {
 
+
+/// <summary>
+/// 128-bit unsigned integer. 
+/// </summary>
+/// <remarks>
+/// Maximum size is 170141183460469231731687303715884105727 or around 170 undecillion.<br/>
+/// Minimum size is -170141183460469231731687303715884105727 or around -170 undecillion.<br/>
+/// </remarks> 
 public struct Int128 : IFormattable, IComparable, IComparable<Int128>, IEquatable<Int128>
 {
     const MethodImplOptions Inline = MethodImplOptions.AggressiveInlining;
@@ -94,7 +102,7 @@ public struct Int128 : IFormattable, IComparable, IComparable<Int128>, IEquatabl
     public static explicit operator byte(Int128 a) => (byte)a.v._lower;
     public static explicit operator ushort(Int128 a) => (ushort)a.v._lower;
     public static explicit operator uint(Int128 a) => (uint)a.v._lower;
-    public static explicit operator ulong(Int128 a) => (ulong)a.v._lower;
+    public static explicit operator ulong(Int128 a) => a.v._lower;
     public static explicit operator UInt128(Int128 a) => a.v;
 
     // Int128 to Signed
@@ -120,78 +128,37 @@ public struct Int128 : IFormattable, IComparable, IComparable<Int128>, IEquatabl
     // Arithmetic Operators
     
     // Addition
-    [MethodImpl(Inline)] 
-    public static Int128 operator +(Int128 a, long b) => Add(a, b);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator +(Int128 a, ulong b) => Add(a, b);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator +(long a, Int128 b) => Add(b, a);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator +(ulong a, Int128 b) => Add(b, a);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator +(Int128 a, Int128 b) => Add(a, b);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator +(Int128 a) => a.v._upper > long.MaxValue ? -a : a;
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator ++(Int128 a) => Add(a, 1);
+    [MethodImpl(Inline)] public static Int128 operator +(Int128 a, long b) => Add(a, b);
+    [MethodImpl(Inline)] public static Int128 operator +(Int128 a, ulong b) => Add(a, b);
+    [MethodImpl(Inline)] public static Int128 operator +(long a, Int128 b) => Add(b, a);
+    [MethodImpl(Inline)] public static Int128 operator +(ulong a, Int128 b) => Add(b, a);
+    [MethodImpl(Inline)] public static Int128 operator +(Int128 a, Int128 b) => Add(a, b);
+    [MethodImpl(Inline)] public static Int128 operator +(Int128 a) => a;
+    [MethodImpl(Inline)] public static Int128 operator ++(Int128 a) => Add(a, 1);
 
     // Subtraction
-    [MethodImpl(Inline)] 
-    public static Int128 operator -(Int128 a, long b) => Subtract(a, b);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator -(Int128 a, ulong b) => Subtract(a, b);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator -(Int128 a, Int128 b) => Subtract(a, b);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator -(Int128 a) => new Int128(-a.v);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator --(Int128 a) => Subtract(a, 1);
+    [MethodImpl(Inline)] public static Int128 operator -(Int128 a, long b) => Subtract(a, b);
+    [MethodImpl(Inline)] public static Int128 operator -(Int128 a, ulong b) => Subtract(a, b);
+    [MethodImpl(Inline)] public static Int128 operator -(Int128 a, Int128 b) => Subtract(a, b);
+    [MethodImpl(Inline)] public static Int128 operator -(Int128 a) => new Int128(-a.v);
+    [MethodImpl(Inline)] public static Int128 operator --(Int128 a) => Subtract(a, 1);
 
     // Multiplication
-    [MethodImpl(Inline)] 
-    public static Int128 operator *(Int128 a, long b) => Multiply(a, b);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator *(Int128 a, ulong b) => Multiply(a, b);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator *(long a, Int128 b) => Multiply(b, a);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator *(ulong a, Int128 b) => Multiply(b, a);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator *(Int128 a, Int128 b) => Multiply(a, b);
+    [MethodImpl(Inline)] public static Int128 operator *(Int128 a, long b) => Multiply(a, b);
+    [MethodImpl(Inline)] public static Int128 operator *(Int128 a, ulong b) => Multiply(a, b);
+    [MethodImpl(Inline)] public static Int128 operator *(long a, Int128 b) => Multiply(b, a);
+    [MethodImpl(Inline)] public static Int128 operator *(ulong a, Int128 b) => Multiply(b, a);
+    [MethodImpl(Inline)] public static Int128 operator *(Int128 a, Int128 b) => Multiply(a, b);
 
     // Division
-    [MethodImpl(Inline)] 
-    public static Int128 operator /(Int128 a, long b) => Divide(a, b);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator /(Int128 a, ulong b) => Divide(a, b);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator /(Int128 a, Int128 b) => Divide(a, b);
+    [MethodImpl(Inline)] public static Int128 operator /(Int128 a, long b) => Divide(a, b);
+    [MethodImpl(Inline)] public static Int128 operator /(Int128 a, ulong b) => Divide(a, b);
+    [MethodImpl(Inline)] public static Int128 operator /(Int128 a, Int128 b) => Divide(a, b);
 
     // Modulus
-    [MethodImpl(Inline)] 
-    public static long operator %(Int128 a, long b) => Remainder(a, b);
-
-    [MethodImpl(Inline)] 
-    public static long operator %(Int128 a, ulong b) => Remainder(a, b);
-
-    [MethodImpl(Inline)] 
-    public static Int128 operator %(Int128 a, Int128 b) => Remainder(a, b);
+    [MethodImpl(Inline)] public static long operator %(Int128 a, long b) => Remainder(a, b);
+    [MethodImpl(Inline)] public static long operator %(Int128 a, ulong b) => Remainder(a, b);
+    [MethodImpl(Inline)] public static Int128 operator %(Int128 a, Int128 b) => Remainder(a, b);
 
     // Comparision Operators
 
@@ -258,7 +225,7 @@ public struct Int128 : IFormattable, IComparable, IComparable<Int128>, IEquatabl
 
     public readonly int CompareTo(Int128 other) => SignedCompare(v, other.v._lower, other.v._upper);
     public readonly int CompareTo(int other) => SignedCompare(v, (ulong)other, (ulong)(other >> 31));
-    public readonly int CompareTo(uint other) => SignedCompare(v, (ulong)other, 0);
+    public readonly int CompareTo(uint other) => SignedCompare(v, other, 0);
     public readonly int CompareTo(long other) => SignedCompare(v, (ulong)other, (ulong)(other >> 63));
     public readonly int CompareTo(ulong other) => SignedCompare(v, other, 0);
 
