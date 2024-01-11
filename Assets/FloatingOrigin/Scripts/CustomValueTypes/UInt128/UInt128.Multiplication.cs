@@ -20,7 +20,7 @@ namespace BigIntegers
             ulong r2 = carry >> 32;
             carry = (uint)carry + u1 * v0;
 
-            return new UInt128(carry << 32 | r0, (carry >> 32) + r2 + u1 * v1);
+            return new UInt128((carry >> 32) + r2 + u1 * v1, carry << 32 | r0);
         }
 
         private static UInt128 Multiply128(UInt128 u, ulong v)
@@ -68,7 +68,7 @@ namespace BigIntegers
             var r2 = carry >> 32;
             carry = (uint)carry + u0u1;
 
-            return new UInt128(carry << 32 | r0, (carry >> 32) + r2 + u1 * u1);
+            return new UInt128((carry >> 32) + r2 + u1 * u1, carry << 32 | r0);
         }
 
         public static UInt128 Square(UInt128 a)

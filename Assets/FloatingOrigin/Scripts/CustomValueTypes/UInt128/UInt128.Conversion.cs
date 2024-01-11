@@ -15,7 +15,7 @@ namespace BigIntegers
             _upper = (ulong)r3 << 32 | r2;
         }
 
-        public UInt128(ulong lower, ulong upper)
+        public UInt128(ulong upper, ulong lower)
         {
             _lower = lower;
             _upper = upper;

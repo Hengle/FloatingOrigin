@@ -72,7 +72,7 @@ namespace BigIntegers
             }
 
             if (b == 64)
-                return new UInt128(0, a._lower);
+                return new UInt128(a._lower, 0);
 
             return new UInt128(0, a._lower << (b - 64));
         }
@@ -83,7 +83,7 @@ namespace BigIntegers
             if (b == 0)
                 return a;
 
-            return new UInt128(a._lower >> b | a._upper << (64 - b), a._upper >> b);
+            return new UInt128(a._upper >> b, a._lower >> b | a._upper << (64 - b));
         }
 
         private static UInt128 RightShift(UInt128 a, int b)
@@ -92,22 +92,22 @@ namespace BigIntegers
                 return RightShift64(a, b);
 
             if (b == 64)
-                return new UInt128(a._upper, 0);
+                return new UInt128(0, a._upper);
 
-            return new UInt128(a._upper >> (b - 64), 0);
+            return new UInt128(0, a._upper >> (b - 64));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)] 
-        private static UInt128 And(UInt128 a, UInt128 b) => new UInt128(a._lower & b._lower, a._upper & b._upper);
+        private static UInt128 And(UInt128 a, UInt128 b) => new UInt128(a._upper & b._upper, a._lower & b._lower);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)] 
-        private static UInt128 Or(UInt128 a, UInt128 b) => new UInt128(a._lower | b._lower, a._upper | b._upper);
+        private static UInt128 Or(UInt128 a, UInt128 b) => new UInt128(a._upper | b._upper, a._lower | b._lower);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)] 
-        private static UInt128 ExclusiveOr(UInt128 a, UInt128 b) => new UInt128(a._lower ^ b._lower, a._upper ^ b._upper);
+        private static UInt128 ExclusiveOr(UInt128 a, UInt128 b) => new UInt128(a._upper ^ b._upper, a._lower ^ b._lower);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)] 
-        private static UInt128 Not(UInt128 a) => new UInt128(~a._lower, ~a._upper);
+        private static UInt128 Not(UInt128 a) => new UInt128(~a._upper, ~a._lower);
 
 
         // Bitwise Operators- Inlined to use direct function call

@@ -12,7 +12,7 @@ namespace BigIntegers
     /// </remarks> 
     public partial struct Int128
     {
-        private UInt128 v;
+        public UInt128 v;
 
         public static readonly Int128 MinValue = (Int128)((UInt128)1 << 127);
         public static readonly Int128 MaxValue = (Int128)(((UInt128)1 << 127) - 1);

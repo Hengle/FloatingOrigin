@@ -2,60 +2,12 @@
 // Modified and reorganized
 
 using System.Runtime.CompilerServices;
-using System.Diagnostics;
 
 
 namespace BigIntegers
 {
     public partial struct UInt128
     {
-        static void LogTime(Stopwatch watch, string label)
-        {
-            watch.Stop();
-            UnityEngine.Debug.Log($"{label}: {watch.ElapsedMilliseconds}ms");
-            watch.Restart();
-        }
-
-        public static void ProfileDivision(int iterations)
-        {
-            UInt128 u = new UInt128(34366365767, uint.MaxValue);
-            Stopwatch watch = Stopwatch.StartNew();
-
-            for (int i = 0; i < iterations; i++)
-                DivRem96(out _, u, new UInt128(1245767, uint.MaxValue));
-
-            LogTime(watch, "DivRem96");
-
-            for (int i = 0; i < iterations; i++)
-                DivRem128(out _, u, new UInt128(uint.MaxValue, 325256));
-
-            LogTime(watch, "DivRem128");
-
-            u = new UInt128(34366365767, uint.MaxValue);
-            for (int i = 0; i < iterations; i++)
-                Divide96(ref u, 8745456u);
-
-            LogTime(watch, "Divide96 uint");
-
-            u = new UInt128(34366365767, uint.MaxValue);
-            for (int i = 0; i < iterations; i++)
-                Divide128(ref u, 8745456u);
-
-            LogTime(watch, "Divide128 uint");
-
-            u = new UInt128(34366365767, uint.MaxValue);
-            for (int i = 0; i < iterations; i++)
-                Divide96(ref u, 8745456ul);
-
-            LogTime(watch, "Divide96 ulong");
-
-            u = new UInt128(34366365767, uint.MaxValue);
-            for (int i = 0; i < iterations; i++)
-                Divide128(ref u, 8745456u);
-            
-            LogTime(watch, "Divide128 ulong");
-        }
-
         // Divide UInt128-UInt128
         // |↳ Divide UInt128-ulong
         // |↳ DivRem96 UInt128-UInt128
@@ -469,6 +421,8 @@ namespace BigIntegers
             return ((ulong)r1 << 32 | r0) >> d;
         }
 
+
+        // Unintuitively, DivRem96 takes longer to execute than DivRem128.
         private static ulong DivRem96(out UInt128 rem, UInt128 a, UInt128 b)
         {
             int d = 32 - GetBitLength((uint)b._upper);

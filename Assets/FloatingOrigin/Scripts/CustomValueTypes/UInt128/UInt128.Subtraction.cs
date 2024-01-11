@@ -9,7 +9,7 @@ namespace BigIntegers
     {
         private static UInt128 Subtract(UInt128 a, ulong b)
         {
-            UInt128 c = new UInt128(a._lower - b, a._upper);
+            UInt128 c = new UInt128(a._upper, a._lower - b);
             if (a._lower < b)
                 --c._upper;
 
@@ -18,7 +18,7 @@ namespace BigIntegers
 
         private static UInt128 Subtract(ulong a, UInt128 b)
         {
-            UInt128 c = new UInt128(a - b._lower, a - b._upper);
+            UInt128 c = new UInt128(a - b._upper, a - b._lower);
             if (a < b._lower)
                 --c._upper;
 
@@ -27,7 +27,7 @@ namespace BigIntegers
 
         private static UInt128 Subtract(UInt128 a, UInt128 b)
         {
-            UInt128 c = new UInt128(a._lower - b._lower, a._upper - b._upper);
+            UInt128 c = new UInt128(a._upper - b._upper, a._lower - b._lower);
             if (a._lower < b._lower)
                 --c._upper;
 

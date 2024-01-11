@@ -2,18 +2,23 @@ using UnityEngine;
 using UnityEngine.Profiling;
 using BigIntegers;
 using System.Numerics;
+using System;
 
 public class Test : MonoBehaviour
 {
     public int iterations = 100;
 
 
-    public long bigVal;
-    public long otherBigVal;
+    public double daVal;
+    public double daVal2;
+    public long prePart;
+    public ushort postPart;
 
 
     void Awake()
     {
-        UInt128.ProfileDivision(iterations);
+        Fixed128 ting = (Fixed128)daVal;
+
+        Debug.Log(ting.ToString());
     }
 }

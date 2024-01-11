@@ -11,7 +11,7 @@ namespace BigIntegers
         // Constructors
         public Int128(long value) => v = new UInt128(value);
         public Int128(ulong value) => v = new UInt128(value);
-        public Int128(ulong lo, ulong hi) => v = new UInt128(lo, hi);
+        public Int128(ulong hi, ulong lo) => v = new UInt128(hi, lo);
         public Int128(double value) => v = new UInt128(value);
         public Int128(decimal value) => v = new UInt128(value);
         public Int128(BigInteger value) => v = new UInt128(value);
