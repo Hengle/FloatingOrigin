@@ -9,7 +9,7 @@ public static class Int128Tester
     static int test = 0;
 
 
-    static void Validate(Int128 orig, BigInteger orig2, Int128 res1, BigInteger res2)
+    static void Validate(Int128 orig, Int128 orig2, Int128 res1, BigInteger res2)
     {   
         test++;
 
@@ -18,7 +18,7 @@ public static class Int128Tester
     }
 
 
-    private static void TestAdd(Int128 value, long otherValue)
+    private static void TestAdd(Int128 value, Int128 otherValue)
     {
         Int128 result = value + otherValue;
         BigInteger oresult = (BigInteger)value + (BigInteger)otherValue;
@@ -27,7 +27,7 @@ public static class Int128Tester
     }
 
 
-    private static void TestSub(Int128 value, long otherValue)
+    private static void TestSub(Int128 value, Int128 otherValue)
     {
         Int128 result = value - otherValue;
         BigInteger oresult = (BigInteger)value - (BigInteger)otherValue;
@@ -36,7 +36,7 @@ public static class Int128Tester
     }
 
 
-    private static void TestMul(Int128 value, long otherValue)
+    private static void TestMul(Int128 value, Int128 otherValue)
     {
         Int128 result = value * otherValue;
         BigInteger oresult = (BigInteger)value * (BigInteger)otherValue;
@@ -45,22 +45,22 @@ public static class Int128Tester
     }
 
 
-    private static void TestDiv(Int128 value, long otherValue)
+    private static void TestDiv(Int128 value, Int128 otherValue)
     {
         Int128 result = value / otherValue;
         BigInteger oresult = (BigInteger)value / (BigInteger)otherValue;
 
-        Validate(value, (BigInteger)otherValue, result, oresult);
+        Validate(value, otherValue, result, oresult);
     }
 
 
-    private static void TestMod(Int128 value, long otherValue)
+    private static void TestMod(Int128 value, Int128 otherValue)
     {
         Int128 result = value % otherValue;
         BigInteger oresult = (BigInteger)value % (BigInteger)otherValue;
 
         // Absolute value of oresult since Int128 modulus always returns positive
-        Validate(value, otherValue, result, BigInteger.Abs(oresult));
+        Validate(value, otherValue, result, oresult);
     }
 
 
@@ -96,7 +96,7 @@ public static class Int128Tester
         TestAdd(GetNum(), -GetNum());
         TestAdd(-GetNum(), -GetNum());
 
-        // Above long range
+        // Above Int128 range
         TestAdd(GetMegaNum(), GetNum());
         TestAdd(-GetMegaNum(), GetNum());
         TestAdd(GetMegaNum(), -GetNum());
@@ -110,7 +110,7 @@ public static class Int128Tester
         TestSub(GetNum(), -GetNum());
         TestSub(-GetNum(), -GetNum());
 
-        // Above long range
+        // Above Int128 range
         TestSub(GetMegaNum(), GetNum());
         TestSub(-GetMegaNum(), GetNum());
         TestSub(GetMegaNum(), -GetNum());
@@ -124,7 +124,7 @@ public static class Int128Tester
         TestMul(GetNum(), -GetMiniNum());
         TestMul(-GetNum(), -GetMiniNum());
 
-        // Above long range
+        // Above Int128 range
         TestMul(GetMegaNum(), GetMiniNum());
         TestMul(-GetMegaNum(), GetMiniNum());
         TestMul(GetMegaNum(), -GetMiniNum());
@@ -138,11 +138,11 @@ public static class Int128Tester
         TestDiv(GetNum(), -GetNum());
         TestDiv(-GetNum(), -GetNum());
 
-        // Above long range
-        TestDiv(GetMegaNum(), GetNum());
-        TestDiv(-GetMegaNum(), GetNum());
-        TestDiv(GetMegaNum(), -GetNum());
-        TestDiv(-GetMegaNum(), -GetNum());
+        // Above Int128 range
+        TestDiv(GetMegaNum(), GetMegaNum());
+        TestDiv(-GetMegaNum(), GetMegaNum());
+        TestDiv(GetMegaNum(), -GetMegaNum());
+        TestDiv(-GetMegaNum(), -GetMegaNum());
     }
 
 
@@ -153,7 +153,7 @@ public static class Int128Tester
         TestMod(GetNum(), -GetMiniNum());
         TestMod(-GetNum(), -GetMiniNum());
 
-        // Above long range
+        // Above Int128 range
         TestMod(GetMegaNum(), GetMiniNum());
         TestMod(-GetMegaNum(), GetMiniNum());
         TestMod(GetMegaNum(), -GetMiniNum());
